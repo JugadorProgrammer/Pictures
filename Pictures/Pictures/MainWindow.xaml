@@ -1,0 +1,73 @@
+﻿<Window x:Class="Pictures.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pictures"
+        xmlns:vm="clr-namespace:Pictures.MVVM" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        FontSize="16"
+        WindowStartupLocation="CenterScreen"
+        Title="Картинки" Height="600" Width="1200">
+
+    <Window.DataContext>
+        <vm:ApplicationViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="11*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <ListBox Grid.Row="0" ItemsSource="{Binding PathsToImages}" SelectedItem="{Binding SelectedImagePath}" SelectionMode="Single" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <TextBlock Margin="0" ToolTip="Нажмите для просмотра" TextWrapping="Wrap" FontSize="16" Text="{Binding Path=PathToImage}" >
+                                <TextBlock.InputBindings>
+                                    <MouseBinding Command="{Binding DataContext.SelectedChangeCommand , RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}" CommandParameter="{Binding Path=PathToImage}"  MouseAction="LeftClick" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </ScrollViewer>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Background="SpringGreen" Content="Открыть" ToolTip="Открыть изображение для просмотра" Command="{Binding AddCommand}" />
+            <Button Grid.Column="1" Background="Tomato" Content="Убрать" ToolTip="Убрать изображение из списка" Command="{Binding RemoveCommand}" />
+        </Grid>
+
+        <ScrollViewer Grid.Row="0" Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Image x:Name="ViewingImage" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None" Source="{Binding SelectedImagePath.PathToImage}">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="{Binding ScaleFactor}" ScaleY="{Binding ScaleFactor}"/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+            </Grid>
+        </ScrollViewer>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button FontSize="30" Grid.Column="0" Background="White" FontWeight="Bold" Content="+" ToolTip="Увеличить" Command="{Binding IncreaseImageCommand}"/>
+            <Button FontSize="30" Grid.Column="1" Background="White" FontWeight="Bold"  Content="-" ToolTip="Уменьшить" Command="{Binding DecreaseImageCommand}"/>
+        </Grid>
+    </Grid>
+</Window>
